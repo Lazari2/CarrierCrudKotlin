@@ -1,4 +1,4 @@
-package com.lazari.gui.CarrierCrudKotlin.Application.Services.ViewModel
+package com.lazari.gui.CarrierCrudKotlin.Controller.ViewModel
 
 class CarrierViewModel(
     val name: String,

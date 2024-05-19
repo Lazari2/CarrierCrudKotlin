@@ -1,11 +1,15 @@
-package com.lazari.gui.CarrierCrudKotlin.Application.Services.Query
+package com.lazari.gui.CarrierCrudKotlin.Application.Services
 
-import com.lazari.gui.CarrierCrudKotlin.Application.Services.ViewModel.CarrierViewModel
+import com.lazari.gui.CarrierCrudKotlin.Controller.ViewModel.CarrierViewModel
+import com.lazari.gui.CarrierCrudKotlin.Domain.Model.Carrier
 import com.lazari.gui.CarrierCrudKotlin.Infraestructure.Repository.CarrierRepository
-import org.springframework.stereotype.Component
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 
-@Component
-class GetCarrierQueryHandler (private val carrierRepository: CarrierRepository) {
+@Service
+class CarrierService {
+    @Autowired
+    lateinit var carrierRepository: CarrierRepository
 
     fun getCarriers(isActive:Boolean): List<CarrierViewModel>{
         val carriers = carrierRepository.getAll()
@@ -27,5 +31,9 @@ class GetCarrierQueryHandler (private val carrierRepository: CarrierRepository) 
                     isActive = carrier.isActive
                 )
             }
+    }
+
+    fun addCarrier(newCarrier: Carrier): Carrier {
+        return carrierRepository.addCarrier(newCarrier)
     }
 }

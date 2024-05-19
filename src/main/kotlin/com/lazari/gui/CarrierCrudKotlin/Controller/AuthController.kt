@@ -1,11 +1,13 @@
 package com.lazari.gui.CarrierCrudKotlin.Controller
 
+import com.lazari.gui.CarrierCrudKotlin.Application.Context.CreateUserEvent
 import com.lazari.gui.CarrierCrudKotlin.Controller.Requests.AuthResponse
 import com.lazari.gui.CarrierCrudKotlin.Controller.Requests.LoginRequest
 import com.lazari.gui.CarrierCrudKotlin.Controller.Requests.RegisterRequest
 import com.lazari.gui.CarrierCrudKotlin.Infraestructure.Repository.UsersRepository
 import com.lazari.gui.CarrierCrudKotlin.Infraestructure.Security.TokenService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.ResponseEntity
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.web.bind.annotation.PostMapping
@@ -26,6 +28,8 @@ class AuthController {
 
     @Autowired
     lateinit var tokenService: TokenService
+    @Autowired
+    lateinit var publisher: ApplicationEventPublisher
 
     @PostMapping("/login")
     fun login(@RequestBody body: LoginRequest): ResponseEntity<Any> {
@@ -50,6 +54,9 @@ class AuthController {
                 password = passwordEncoder.encode(body.password)
             )
             usersRepository.save(newUser)
+            publisher.publishEvent(CreateUserEvent(newUser.name,
+                                                   newUser.email,
+                                                   newUser.password))
 
             val token = tokenService.generateToken(newUser)
             ResponseEntity.ok(AuthResponse(newUser.name, token))
