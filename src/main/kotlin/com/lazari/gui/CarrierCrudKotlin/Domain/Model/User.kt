@@ -1,10 +1,9 @@
-import jakarta.persistence.*
+package com.lazari.gui.CarrierCrudKotlin.Domain.Model
+import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
-@Entity
-@Table(name = "users")
+@Document(collection = "users")
 class User(
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID = UUID.randomUUID(),
 
     name: String,

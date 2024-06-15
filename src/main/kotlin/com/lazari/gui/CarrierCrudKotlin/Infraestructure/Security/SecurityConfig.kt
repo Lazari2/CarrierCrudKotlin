@@ -32,11 +32,14 @@ class SecurityConfig {
             .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { authorize ->
                 authorize
-                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                    .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-                    .anyRequest().authenticated()
+//                    .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+//                    .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+//                    .requestMatchers(HttpMethod.GET, "/auth/users").permitAll()
+//                    .anyRequest().authenticated()
+                    .anyRequest().permitAll()
             }
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter::class.java)
+
 
         return http.build()
     }

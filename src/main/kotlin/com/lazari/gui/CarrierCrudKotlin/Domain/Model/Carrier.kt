@@ -1,24 +1,27 @@
 package com.lazari.gui.CarrierCrudKotlin.Domain.Model
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
+
+import org.springframework.data.mongodb.core.mapping.Document
 import java.util.UUID
 
-@Table(name ="carrier")
-@Entity(name="carrier")
+@Document(collection = "carrier")
+class Carrier(
+    val id: UUID = UUID.randomUUID(),
 
-class Carrier {
-
-    val  id : UUID = UUID.randomUUID()
-    var name: String = ""
+    name: String,
+    alias: String?,
+    pickupRequestEmail: String?,
+    sendPickupRequestEmail: Boolean,
+    isActive: Boolean
+) {
+    var name: String = name
         private set
-    var alias : String = ""
+    var alias: String? = alias
         private set
-    var pickupRequestEmail: String = ""
+    var pickupRequestEmail: String? = pickupRequestEmail
         private set
-    var sendPickupRequestEmail: Boolean = false
+    var sendPickupRequestEmail: Boolean = sendPickupRequestEmail
         private set
-    var isActive: Boolean = false
+    var isActive: Boolean = isActive
         private set
-    }
-
+}

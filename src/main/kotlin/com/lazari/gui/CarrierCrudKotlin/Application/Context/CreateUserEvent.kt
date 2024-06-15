@@ -1,6 +1,7 @@
 package com.lazari.gui.CarrierCrudKotlin.Application.Context
 
-import User
+
+import com.lazari.gui.CarrierCrudKotlin.Domain.Model.User
 import org.springframework.context.ApplicationEvent
 
 data class CreateUserEvent (val name:String,

@@ -1,8 +1,8 @@
 package com.lazari.gui.CarrierCrudKotlin.Infraestructure.Repository
-import User
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.lazari.gui.CarrierCrudKotlin.Domain.Model.User
+import org.springframework.data.mongodb.repository.MongoRepository
 import java.util.Optional
 
-interface UsersRepository : JpaRepository<User, String> {
+interface UsersRepository : MongoRepository<User, String> {
    fun findByEmail(email:String): Optional<User>
 }

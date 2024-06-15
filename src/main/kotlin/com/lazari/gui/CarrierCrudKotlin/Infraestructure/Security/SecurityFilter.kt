@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
-import java.util.*
+
 
 @Component
 class SecurityFilter : OncePerRequestFilter() {
@@ -38,6 +38,6 @@ class SecurityFilter : OncePerRequestFilter() {
     private fun recoverToken(request: HttpServletRequest): String? {
         val authHeader = request.getHeader("Authorization")
         if (authHeader == null) return null
-        return authHeader.replace("Bearer", "").trim()
+        return authHeader.replace("Bearer ", "").trim()
     }
 }

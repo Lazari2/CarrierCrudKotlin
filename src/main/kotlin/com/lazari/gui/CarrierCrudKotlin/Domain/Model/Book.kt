@@ -1,13 +1,10 @@
 package com.lazari.gui.CarrierCrudKotlin.Domain.Model
 
-import jakarta.persistence.*
+import org.springframework.data.mongodb.core.mapping.Document
 import java.util.UUID
 
-@Entity(name = "book")
-@Table(name = "book")
+@Document(collection = "book")
 class Book(
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID = UUID.randomUUID(),
 
     title: String,
@@ -17,7 +14,10 @@ class Book(
     genre: String,
     price: Float,
     description: String,
-    publishDate:java.util.Date
+    publishDate:java.util.Date,
+
+//    var coverImageId: String?,
+//    var audioBookId: String?
 ) {
     var title: String = title
         private set
