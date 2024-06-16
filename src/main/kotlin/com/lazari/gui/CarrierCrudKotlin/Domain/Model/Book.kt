@@ -14,10 +14,11 @@ class Book(
     genre: String,
     price: Float,
     description: String,
-    publishDate:java.util.Date,
+    publishDate:String,
+    coverImageId: String?,
+    audioBookId: String?,
 
-//    var coverImageId: String?,
-//    var audioBookId: String?
+
 ) {
     var title: String = title
         private set
@@ -33,6 +34,9 @@ class Book(
         private set
     var description: String = description
         private set
-    var publishDate: java.util.Date = publishDate
+    var publishDate: String = publishDate
         private set
+    var coverImageId: String? = coverImageId
+
+    var audioBookId: String? = audioBookId
 }

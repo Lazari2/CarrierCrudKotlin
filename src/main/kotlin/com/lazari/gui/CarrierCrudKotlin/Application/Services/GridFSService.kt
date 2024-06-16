@@ -2,6 +2,7 @@ package com.lazari.gui.CarrierCrudKotlin.Application.Services
 import com.mongodb.client.gridfs.GridFSBucket
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.gridfs.GridFsTemplate
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -26,6 +27,16 @@ class GridFSService {
         return gridFsTemplate.store(inputStream, filename, metadata)
     }
 
+//    fun getFileById(id: String): Map<String, Any>? {
+//        val file = gridFsTemplate.findOne(Query(Criteria.where("_id").`is`(ObjectId(id))))
+//        return file?.let {
+//            mapOf(
+//                "id" to it.objectId.toHexString(),
+//                "filename" to it.filename,
+//                "contentType" to it.metadata?.getString("contentType")
+//            )
+//        }
+//    }
     fun getFile(objectId: ObjectId): ByteArray {
         val downloadStream = gridFSBucket.openDownloadStream(objectId)
         val outputStream = ByteArrayOutputStream()

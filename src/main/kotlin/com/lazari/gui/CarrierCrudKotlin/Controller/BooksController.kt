@@ -1,5 +1,6 @@
 package com.lazari.gui.CarrierCrudKotlin.Controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.lazari.gui.CarrierCrudKotlin.Application.Services.BookService
 import com.lazari.gui.CarrierCrudKotlin.Application.Services.GridFSService
 import com.lazari.gui.CarrierCrudKotlin.Controller.Requests.BookRequest
@@ -40,7 +41,9 @@ class BooksController {
                 description = bookRequest.description,
                 genre = bookRequest.genre,
                 price = bookRequest.price,
-                publishDate = bookRequest.publishDate
+                publishDate = bookRequest.publishDate,
+                coverImageId =  bookRequest.coverImageId,
+                audioBookId = bookRequest.audioBookId
             )
         }
         return if (bookViewModels.isEmpty()) {
@@ -50,9 +53,43 @@ class BooksController {
         }
     }
 
+//    @GetMapping("/{id}")
+//    fun getBookById(@PathVariable("id") id: String): ResponseEntity<BookRequest> {
+//        val book = bookService.getBookById(id)
+//        return ResponseEntity.ok(book)
+//    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createBook(@RequestBody bookRequest: BookRequest): BookRequest {
+    fun createBook(
+        @RequestParam("title") title: String,
+        @RequestParam("author") author: String,
+        @RequestParam("publishingCompany") publishingCompany: String,
+        @RequestParam("year") year: Int,
+        @RequestParam("genre") genre: String,
+        @RequestParam("price") price: Float,
+        @RequestParam("description") description: String,
+        @RequestParam("publishDate") publishDate: String,
+        @RequestParam("coverImage", required = false) coverImage: MultipartFile?,
+        @RequestParam("audioBook", required = false) audioBook: MultipartFile?,
+        @RequestParam("coverImageId", required = false) coverImageId: String?,
+        @RequestParam("audioBookId", required = false) audioBookId: String?
+    ): BookRequest {
+        val bookRequest = BookRequest(
+            title = title,
+            author = author,
+            publishingCompany = publishingCompany,
+            year = year,
+            genre = genre,
+            price = price,
+            description = description,
+            publishDate = publishDate,
+            coverImage = coverImage,
+            audioBook = audioBook,
+            coverImageId = coverImageId,
+            audioBookId =  audioBookId,
+        )
+
         return bookService.createBook(bookRequest)
     }
 

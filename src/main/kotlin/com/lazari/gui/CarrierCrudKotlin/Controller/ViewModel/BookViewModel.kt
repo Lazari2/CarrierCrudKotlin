@@ -9,5 +9,7 @@ data class BookViewModel(val title: String,
                          val genre: String,
                          val price: Float,
                          val description: String,
-                         val publishDate: Date,
+                         val publishDate: String,
+                         val coverImageId: String?,
+                         val audioBookId: String?
                          )

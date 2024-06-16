@@ -1,4 +1,4 @@
-package com.lazari.gui.CarrierCrudKotlin.Application.Context
+package com.lazari.gui.CarrierCrudKotlin.Application.Event
 
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 class UserEventListener {
     @EventListener
     fun handleCreateUserEvent(event: CreateUserEvent){
-        // implementar lógica para tratar o evento de criação
+        // Implementacão
         println("User Created: ${event.name + event.email}")
     }
 }

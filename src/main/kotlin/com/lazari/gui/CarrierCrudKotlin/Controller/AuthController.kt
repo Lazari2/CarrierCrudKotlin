@@ -1,6 +1,6 @@
 package com.lazari.gui.CarrierCrudKotlin.Controller
 
-import com.lazari.gui.CarrierCrudKotlin.Application.Context.CreateUserEvent
+import com.lazari.gui.CarrierCrudKotlin.Application.Event.CreateUserEvent
 import com.lazari.gui.CarrierCrudKotlin.Controller.Requests.AuthResponse
 import com.lazari.gui.CarrierCrudKotlin.Controller.Requests.LoginRequest
 import com.lazari.gui.CarrierCrudKotlin.Controller.Requests.RegisterRequest
