@@ -14,6 +14,7 @@ import java.util.*
 import org.bson.types.ObjectId
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
@@ -42,8 +43,8 @@ class BooksController {
                 genre = bookRequest.genre,
                 price = bookRequest.price,
                 publishDate = bookRequest.publishDate,
-                coverImageId =  bookRequest.coverImageId,
-                audioBookId = bookRequest.audioBookId
+                coverImageUrl =  "/Book/cover/${bookRequest.coverImageId}",
+                audioBookUrl = "/Book/audio/${bookRequest.audioBookId}"
             )
         }
         return if (bookViewModels.isEmpty()) {
@@ -51,6 +52,18 @@ class BooksController {
         } else {
             ResponseEntity.ok(bookViewModels)
         }
+    }
+
+    @GetMapping("/cover/{id}", produces = [MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE])
+    fun getCoverImage(@PathVariable id: String): ResponseEntity<ByteArray> {
+        val imageBytes = gridFSService.getFile(ObjectId(id))
+        return ResponseEntity.ok(imageBytes)
+    }
+
+    @GetMapping("/audio/{id}", produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE])
+    fun getAudioBook(@PathVariable id: String): ResponseEntity<ByteArray> {
+        val audioBytes = gridFSService.getFile(ObjectId(id))
+        return ResponseEntity.ok(audioBytes)
     }
 
 //    @GetMapping("/{id}")
@@ -70,11 +83,34 @@ class BooksController {
         @RequestParam("price") price: Float,
         @RequestParam("description") description: String,
         @RequestParam("publishDate") publishDate: String,
-        @RequestParam("coverImage", required = false) coverImage: MultipartFile?,
-        @RequestParam("audioBook", required = false) audioBook: MultipartFile?,
-        @RequestParam("coverImageId", required = false) coverImageId: String?,
-        @RequestParam("audioBookId", required = false) audioBookId: String?
+        @RequestParam("coverImage", required = true) coverImage: MultipartFile?,
+        @RequestParam("audioBook", required = false) audioBook: MultipartFile?
     ): BookRequest {
+        var coverImageIdFinal: String? = null
+        var audioBookIdFinal: String? = null
+
+        val timestamp = System.currentTimeMillis()
+        val coverImageFilename = "$title-cover-$timestamp.${coverImage?.contentType?.split("/")?.last()}"
+        val audioBookFilename = "$title-audio-$timestamp.${audioBook?.contentType?.split("/")?.last()}"
+
+        if (coverImage != null && !coverImage.isEmpty) {
+            println("Recebendo coverImage: ${coverImage.originalFilename}")
+            val savedCoverImageId = gridFSService.storeFile(coverImage, coverImageFilename)
+            coverImageIdFinal = savedCoverImageId.toString()
+            println("CoverImage ID: $coverImageIdFinal")
+        } else {
+            println("coverImage está null ou vazio")
+        }
+
+        if (audioBook != null && !audioBook.isEmpty) {
+            println("Recebendo audioBook: ${audioBook.originalFilename}")
+            val savedAudioBookId = gridFSService.storeFile(audioBook, audioBookFilename)
+            audioBookIdFinal = savedAudioBookId.toString()
+            println("AudioBook ID: $audioBookIdFinal")
+        } else {
+            println("audioBook está null ou vazio")
+        }
+
         val bookRequest = BookRequest(
             title = title,
             author = author,
@@ -84,14 +120,15 @@ class BooksController {
             price = price,
             description = description,
             publishDate = publishDate,
-            coverImage = coverImage,
-            audioBook = audioBook,
-            coverImageId = coverImageId,
-            audioBookId =  audioBookId,
+            coverImageId = coverImageIdFinal,
+            audioBookId = audioBookIdFinal
         )
+
+        println("BookRequest: $bookRequest")
 
         return bookService.createBook(bookRequest)
     }
+
 
 //    @GetMapping("/{id}/cover")
 //    fun getCover(@PathVariable id: UUID): ResponseEntity<Any> {

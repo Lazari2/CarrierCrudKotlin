@@ -67,13 +67,13 @@ class BookService {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
         val publishDate: Date = dateFormat.parse(bookRequest.publishDate)
 
-        val coverImageId: ObjectId? = bookRequest.coverImage?.let {
-            gridFSService.storeFile(it, it.originalFilename ?: "cover")
-        }
-
-        val audioBookId: ObjectId? = bookRequest.audioBook?.let {
-            gridFSService.storeFile(it, it.originalFilename ?: "audio")
-        }
+//        val coverImageId: ObjectId? = bookRequest.coverImage?.let {
+//            gridFSService.storeFile(it, it.originalFilename ?: "cover")
+//        }
+//
+//        val audioBookId: ObjectId? = bookRequest.audioBook?.let {
+//            gridFSService.storeFile(it, it.originalFilename ?: "audio")
+//        }
 
         val newBook = Book(
             title = bookRequest.title,
@@ -84,8 +84,8 @@ class BookService {
             price = bookRequest.price,
             description = bookRequest.description,
             publishDate = bookRequest.publishDate,
-            coverImageId = coverImageId?.toHexString(),
-            audioBookId = audioBookId?.toHexString()
+            coverImageId = bookRequest.coverImageId,
+            audioBookId = bookRequest.audioBookId
         )
 
         val savedBook = booksRepository.save(newBook)
@@ -99,10 +99,8 @@ class BookService {
             price = savedBook.price,
             description = savedBook.description,
             publishDate = savedBook.publishDate,
-            coverImage = null,
-            audioBook = null,
-            audioBookId = savedBook.audioBookId,
-            coverImageId = savedBook.coverImageId
+            coverImageId = savedBook.coverImageId,
+            audioBookId = savedBook.audioBookId
         )
     }
 }

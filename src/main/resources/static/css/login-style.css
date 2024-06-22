@@ -1,0 +1,61 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+#bookshelf-section {
+    background-image: url('/images/loginPagePhoto.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+#login-section {
+    border-left: 1px solid #ddd;
+    padding: 3rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+#login-section h2 {
+    font-family: 'Serif', serif;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+#login-section p {
+    font-size: 1rem;
+    color: #666;
+}
+
+.btn-primary {
+    background-color: #a47551;
+    border-color: #a47551;
+}
+
+.btn-primary:hover {
+    background-color: #8b5e3f;
+    border-color: #8b5e3f;
+}
+
+.btn-success {
+    background-color: #8fb996;
+    border-color: #8fb996;
+}
+
+.btn-success:hover {
+    background-color: #769f7d;
+    border-color: #769f7d;
+}
+
+.text-center {
+    text-align: center;
+}
+
+a {
+    color: #a47551;
+}
+
+a:hover {
+    color: #8b5e3f;
+}

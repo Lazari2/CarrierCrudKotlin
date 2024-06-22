@@ -13,8 +13,6 @@ data class BookRequest(
     val price: Float,
     val description: String,
     val publishDate: String,
-    val coverImage: MultipartFile? = null,
-    val audioBook: MultipartFile? = null,
     val coverImageId: String?,
-    val audioBookId: String?,
-    )
+    val audioBookId: String?
+)

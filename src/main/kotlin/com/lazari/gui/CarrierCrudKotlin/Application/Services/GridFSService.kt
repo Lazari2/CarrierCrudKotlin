@@ -22,9 +22,12 @@ class GridFSService {
     private lateinit var gridFSBucket: GridFSBucket
 
     fun storeFile(file: MultipartFile, filename: String): ObjectId {
+        println("Armazenando arquivo: $filename com tipo ${file.contentType}")
         val inputStream: InputStream = file.inputStream
         val metadata = org.bson.Document("contentType", file.contentType)
-        return gridFsTemplate.store(inputStream, filename, metadata)
+        val objectId = gridFsTemplate.store(inputStream, filename, metadata)
+        println("File stored with ObjectId: $objectId")
+        return objectId
     }
 
 //    fun getFileById(id: String): Map<String, Any>? {
