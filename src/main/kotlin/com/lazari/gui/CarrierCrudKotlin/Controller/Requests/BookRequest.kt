@@ -1,8 +1,5 @@
 package com.lazari.gui.CarrierCrudKotlin.Controller.Requests
 
-import org.springframework.data.annotation.Id
-import org.springframework.web.multipart.MultipartFile
-import java.util.*
 
 data class BookRequest(
     val title: String,

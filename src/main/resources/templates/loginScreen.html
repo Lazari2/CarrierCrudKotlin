@@ -13,8 +13,8 @@
         </div>
         <div class="col-md-6 d-flex flex-column align-items-center justify-content-center bg-light p-5" id="login-section">
             <div class="text-center mb-4">
-                <h2>Bem vindo a Estante Virtual!</h2>
-                <p>O seu acervo de livros online!</p>
+                <h2>Bem vindo a Estante Virtual</h2>
+                <p>O seu acervo de livros online</p>
             </div>
             <form th:action="@{/auth/login}" method="post" class="w-100">
                 <div class="form-group">
@@ -27,7 +27,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary btn-block">Entrar</button>
                 <div class="text-center my-3">
-                    <span>Ou</span>
+<!--                    <span>Ou</span>-->
                 </div>
                 <button type="button" class="btn btn-success btn-block">Continuar com Google</button>
             </form>
@@ -61,6 +61,7 @@
                 if (response.ok) {
                     return response.json();
                 } else {
+                    alert("Email ou senha inválidos. Verifique suas credenciais");
                     throw new Error('Login falhou. Verifique suas credenciais.');
                 }
             })

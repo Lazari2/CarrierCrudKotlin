@@ -1,7 +1,6 @@
-package com.lazari.gui.CarrierCrudKotlin.Controller.ViewModel
+package com.lazari.gui.CarrierCrudKotlin.Application.DTO
 
-
-data class BookViewModel(
+data class BookDTO(
     val id: String?,
     val title: String,
     val author: String,
@@ -11,6 +10,6 @@ data class BookViewModel(
     val price: Float,
     val description: String,
     val publishDate: String,
-    val coverImageUrl: String?,
-    val audioBookUrl: String?
+    val coverImageId: String?,
+    val audioBookId: String?
 )

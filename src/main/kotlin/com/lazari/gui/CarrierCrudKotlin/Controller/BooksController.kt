@@ -1,21 +1,18 @@
 package com.lazari.gui.CarrierCrudKotlin.Controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.lazari.gui.CarrierCrudKotlin.Application.Services.BookService
 import com.lazari.gui.CarrierCrudKotlin.Application.Services.GridFSService
 import com.lazari.gui.CarrierCrudKotlin.Controller.Requests.BookRequest
 import com.lazari.gui.CarrierCrudKotlin.Controller.ViewModel.BookViewModel
-import com.lazari.gui.CarrierCrudKotlin.Domain.Model.Book
-import com.lazari.gui.CarrierCrudKotlin.Infraestructure.Repository.BooksRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.*
 import org.bson.types.ObjectId
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.multipart.MultipartFile
+import java.text.ParseException
+import java.text.SimpleDateFormat
 
 @RestController
 @RequestMapping("/Book")
@@ -27,30 +24,52 @@ class BooksController {
     @Autowired
     lateinit var gridFSService: GridFSService
 
-    @Autowired
-    lateinit var booksRepository: BooksRepository
-
     @GetMapping
     fun getAllBooks(): ResponseEntity<List<BookViewModel>> {
         val books = bookService.getBooks()
-        val bookViewModels = books.map { bookRequest ->
+        val bookViewModels = books.map { bookDTO ->
             BookViewModel(
-                title = bookRequest.title,
-                author = bookRequest.author,
-                publishingCompany = bookRequest.publishingCompany,
-                year = bookRequest.year,
-                description = bookRequest.description,
-                genre = bookRequest.genre,
-                price = bookRequest.price,
-                publishDate = bookRequest.publishDate,
-                coverImageUrl =  "/Book/cover/${bookRequest.coverImageId}",
-                audioBookUrl = "/Book/audio/${bookRequest.audioBookId}"
+                id = bookDTO.id,
+                title = bookDTO.title,
+                author = bookDTO.author,
+                publishingCompany = bookDTO.publishingCompany,
+                year = bookDTO.year,
+                description = bookDTO.description,
+                genre = bookDTO.genre,
+                price = bookDTO.price,
+                publishDate = bookDTO.publishDate,
+                coverImageUrl =  "/Book/cover/${bookDTO.coverImageId}",
+                audioBookUrl = "/Book/audio/${bookDTO.audioBookId}"
             )
         }
         return if (bookViewModels.isEmpty()) {
             ResponseEntity.badRequest().build()
         } else {
             ResponseEntity.ok(bookViewModels)
+        }
+    }
+    @GetMapping("/{id}")
+    fun getBookById(@PathVariable id: String): ResponseEntity<BookViewModel> {
+        val bookOptional = bookService.getBookById(id)
+
+        return if (bookOptional.isPresent) {
+            val bookDTO = bookOptional.get()
+            val bookViewModel = BookViewModel(
+                id = bookDTO.id,
+                title = bookDTO.title,
+                author = bookDTO.author,
+                publishingCompany = bookDTO.publishingCompany,
+                year = bookDTO.year,
+                description = bookDTO.description,
+                genre = bookDTO.genre,
+                price = bookDTO.price,
+                publishDate = bookDTO.publishDate,
+                coverImageUrl = "/Book/cover/${bookDTO.coverImageId}",
+                audioBookUrl = "/Book/audio/${bookDTO.audioBookId}"
+            )
+            ResponseEntity.ok(bookViewModel)
+        } else {
+            ResponseEntity.notFound().build()
         }
     }
 
@@ -66,11 +85,6 @@ class BooksController {
         return ResponseEntity.ok(audioBytes)
     }
 
-//    @GetMapping("/{id}")
-//    fun getBookById(@PathVariable("id") id: String): ResponseEntity<BookRequest> {
-//        val book = bookService.getBookById(id)
-//        return ResponseEntity.ok(book)
-//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -92,26 +106,23 @@ class BooksController {
         val timestamp = System.currentTimeMillis()
         val coverImageFilename = "$title-cover-$timestamp.${coverImage?.contentType?.split("/")?.last()}"
         val audioBookFilename = "$title-audio-$timestamp.${audioBook?.contentType?.split("/")?.last()}"
+        try {
+            val publishDateFormatted = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").parse(publishDate)
+        } catch (e: ParseException) {
+            throw IllegalArgumentException("Formato de data inválido. Use o formato yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+        }
 
         if (coverImage != null && !coverImage.isEmpty) {
-            println("Recebendo coverImage: ${coverImage.originalFilename}")
             val savedCoverImageId = gridFSService.storeFile(coverImage, coverImageFilename)
             coverImageIdFinal = savedCoverImageId.toString()
-            println("CoverImage ID: $coverImageIdFinal")
-        } else {
-            println("coverImage está null ou vazio")
         }
 
         if (audioBook != null && !audioBook.isEmpty) {
-            println("Recebendo audioBook: ${audioBook.originalFilename}")
             val savedAudioBookId = gridFSService.storeFile(audioBook, audioBookFilename)
             audioBookIdFinal = savedAudioBookId.toString()
-            println("AudioBook ID: $audioBookIdFinal")
-        } else {
-            println("audioBook está null ou vazio")
         }
-
         val bookRequest = BookRequest(
+
             title = title,
             author = author,
             publishingCompany = publishingCompany,
@@ -129,27 +140,62 @@ class BooksController {
         return bookService.createBook(bookRequest)
     }
 
+    @DeleteMapping("/{id}")
+    fun deleteBookByID(@PathVariable id: String): Boolean {
+        return bookService.deleteBook(id)
+    }
 
-//    @GetMapping("/{id}/cover")
-//    fun getCover(@PathVariable id: UUID): ResponseEntity<Any> {
-//        val book = booksRepository.findById(id.toString()).orElseThrow { RuntimeException("Book not found") }
-//        val coverId = ObjectId(book.coverImageId)
-//        val coverBytes = gridFSService.getFile(coverId)
-//
-//        val headers = HttpHeaders()
-//        headers.add(HttpHeaders.CONTENT_TYPE, "image/jpeg")
-//
-//        return ResponseEntity(coverBytes, headers, HttpStatus.OK)
-//    }
-//
-//    @PostMapping("/{id}/uploadCover")
-//    fun uploadCover(@PathVariable id: UUID, @RequestParam("file") file: MultipartFile): ResponseEntity<Any> {
-//        val book = booksRepository.findById(id.toString()).orElseThrow { RuntimeException("Book not found") }
-//        val coverId = gridFSService.storeFile(file, file.originalFilename ?: "cover")
-//
-//        book.coverImageId = coverId.toHexString()
-//        booksRepository.save(book)
-//
-//        return ResponseEntity.status(HttpStatus.CREATED).build()
-//    }
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun updateBook(
+        @PathVariable("id") id: String,
+        @RequestParam("title") title: String,
+        @RequestParam("author") author: String,
+        @RequestParam("publishingCompany") publishingCompany: String,
+        @RequestParam("year") year: Int,
+        @RequestParam("genre") genre: String,
+        @RequestParam("price") price: Float,
+        @RequestParam("description") description: String,
+        @RequestParam("publishDate") publishDate: String,
+        @RequestParam("coverImage", required = false) coverImage: MultipartFile?,
+        @RequestParam("audioBook", required = false) audioBook: MultipartFile?
+    ): BookRequest {
+        var coverImageIdFinal: String? = null
+        var audioBookIdFinal: String? = null
+
+        val timestamp = System.currentTimeMillis()
+        val coverImageFilename = "$title-cover-$timestamp.${coverImage?.contentType?.split("/")?.last()}"
+        val audioBookFilename = "$title-audio-$timestamp.${audioBook?.contentType?.split("/")?.last()}"
+
+        try {
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").parse(publishDate)
+        } catch (e: ParseException) {
+            throw IllegalArgumentException("Formato de data inválido. Use o formato yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+        }
+
+        if (coverImage != null && !coverImage.isEmpty) {
+            val savedCoverImageId = gridFSService.storeFile(coverImage, coverImageFilename)
+            coverImageIdFinal = savedCoverImageId.toString()
+        }
+
+        if (audioBook != null && !audioBook.isEmpty) {
+            val savedAudioBookId = gridFSService.storeFile(audioBook, audioBookFilename)
+            audioBookIdFinal = savedAudioBookId.toString()
+        }
+
+        val bookRequest = BookRequest(
+            title = title,
+            author = author,
+            publishingCompany = publishingCompany,
+            year = year,
+            genre = genre,
+            price = price,
+            description = description,
+            publishDate = publishDate,
+            coverImageId = coverImageIdFinal,
+            audioBookId = audioBookIdFinal
+        )
+        return bookService.updateBook(id, bookRequest)
+    }
+
 }

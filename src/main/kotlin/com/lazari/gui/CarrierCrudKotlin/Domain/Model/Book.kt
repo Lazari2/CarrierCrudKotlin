@@ -1,11 +1,13 @@
 package com.lazari.gui.CarrierCrudKotlin.Domain.Model
 
+import com.lazari.gui.CarrierCrudKotlin.Controller.Requests.BookRequest
+import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import java.util.UUID
 
 @Document(collection = "book")
 class Book(
-    val id: UUID = UUID.randomUUID(),
+    @Id
+    val id: String? = null,
 
     title: String,
     author: String,
@@ -17,9 +19,8 @@ class Book(
     publishDate:String,
     coverImageId: String?,
     audioBookId: String?,
+    ) {
 
-
-) {
     var title: String = title
         private set
     var author: String = author
@@ -39,4 +40,17 @@ class Book(
     var coverImageId: String? = coverImageId
 
     var audioBookId: String? = audioBookId
+
+    fun updateBook(newBookRequest: BookRequest) {
+        title = newBookRequest.title
+        author = newBookRequest.author
+        publishingCompany = newBookRequest.publishingCompany
+        year = newBookRequest.year
+        genre = newBookRequest.genre
+        price = newBookRequest.price
+        description = newBookRequest.description
+        publishDate = newBookRequest.publishDate
+        coverImageId = newBookRequest.coverImageId
+        audioBookId = newBookRequest.audioBookId
+    }
 }

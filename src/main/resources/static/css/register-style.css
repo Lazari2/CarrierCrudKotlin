@@ -24,3 +24,9 @@ body {
 .alert {
     margin-top: 20px;
 }
+
+#bookshelf-section {
+    background-image: url('/images/loginPagePhoto.jpg');
+    background-size: cover;
+    background-position: center;
+}

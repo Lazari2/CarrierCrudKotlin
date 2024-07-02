@@ -1,36 +1,80 @@
-body {
-    background-color: #f8f9fa;
-    font-family: 'Arial', sans-serif;
-}
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
 
-h1 {
-    font-family: 'Serif', serif;
-    color: #343a40;
-}
+        h1 {
+            font-family: 'Serif', serif;
+            color: #343a40;
+        }
 
-#addBookForm {
-    border: 1px solid #dee2e6;
-    padding: 20px;
-    border-radius: 5px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+        #addBookForm {
+            border: 1px solid #dee2e6;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
 
-#bookGrid {
-    margin-top: 20px;
-}
+        #bookGrid {
+            margin-top: 20px;
+        }
 
-.book-card {
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-    padding: 15px;
-    text-align: center;
-}
+        #bookAudio {
+            width: 100%;
+            max-width: 90%;
+            margin-top: 10px;
+        }
 
-.book-card img {
-    max-height: 150px;
-    margin-bottom: 10px;
-}
+       .container {
+           max-width: 90%;
+       }
+
+       .book-card {
+           width: 100%;
+           border: 1px solid #dee2e6;
+           border-radius: 5px;
+           background-color: #fff;
+           box-shadow: 0 0 10px rgba(0,0,0,0.1);
+           padding: 15px;
+           text-align: center;
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           margin: 10px;
+       }
+
+       .book-card img {
+           width: 100%;
+           height: auto;
+           object-fit: cover;
+
+       }
+
+       .book-card .book-details {
+           margin-top: 15px;
+           width: 100%;
+       }
+
+        .fixed-button {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-button {
+            font-size: 24px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
